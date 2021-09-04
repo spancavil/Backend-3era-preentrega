@@ -1,0 +1,48 @@
+<%- include('./layout')-%>
+    <div class="container my-5">
+
+        <h1>SIGNUP</h1>
+        <br>
+        <form class="form m-3" role="form" action="/signup" method="post" autocomplete="off" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <input name='username' placeholder="Username" class="form-control" type="text" required>
+            </div>
+            <div class="form-group">
+                <input name='password' placeholder="Password" class="form-control" type="password" required>
+            </div>
+
+            <hr>
+            <h5>Datos adicionales</h5>
+
+            <div class="form-group">
+                <input name='fullName' placeholder="Nombre completo" class="form-control" type="text" required>
+            </div>
+
+            <div class="form-group">
+                <input name='email' placeholder="email" class="form-control" type="email" required>
+            </div>
+
+            <div class="form-group">
+                <input name='telefono' placeholder="+549(cod Area)(Celular)" class="form-control" type="number" required>
+            </div>
+            
+            <div class="form-group">
+                <p>Subí tu foto</p>
+                <input type="file" id="myFile" name="foto" value="">
+            </div>
+
+            <div class="form-group">
+                <input class="btn btn-success my-3" type="submit" value="sign-up">
+            </div>
+        </form>
+        <button class="btn btn-success my-3" onclick="goLogin()">Back Login </button>
+    </div>
+    <script>
+        function goLogin() {
+            location.href = "/"
+        }
+    </script>
+    </body>
+
+    </html>

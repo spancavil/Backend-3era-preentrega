@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
+const { loggerError, loggerConsole } = require('./loggerWinston');
 
 dotenv.config()
 
@@ -36,10 +37,10 @@ function sendMailGmailSignup(mailOptions) {
 
     transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-            console.log(err)
+            loggerError.log("error", err)
             return err
         }
-        console.log(info)
+        loggerConsole.log("debug", info)
     });
 }
 

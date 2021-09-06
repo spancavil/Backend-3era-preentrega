@@ -9,10 +9,10 @@ const schema = mongoose.Schema({
         codigo: {type: String, required: true, max: 300},
         imagen: {type:String, required: true, max: 400}
     },
-    productoId: {type: String, required: true, max: 300},
-    timestamp: {type: String, required: true, max: 300}
+    timestamp: {type: String, required: true, max: 300},
+    buyer: {type: String, required: true, max: 300}
 })
 
-const carritoMongo = mongoose.model('carrito', schema);
+const carritoMongo = mongoose.model('productoEnCarrito', schema);
 
 module.exports = carritoMongo;

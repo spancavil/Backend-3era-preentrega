@@ -2,6 +2,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const Users = require('../models/Users');
 const bCrypt = require('bcrypt')
+const {loggerConsole, loggerError, loggerWarn} = require ('../libs/loggerWinston')
 
 passport.use('login', new LocalStrategy({
     passReqToCallback: true
@@ -9,18 +10,18 @@ passport.use('login', new LocalStrategy({
     function (req,username, password, done) {
         Users.findOne({'username': username}, 
             function (err, user) {
-                console.log("enter the tekken!")
+                loggerConsole.log("debug", "enter the Login!")
                 if (err) return done(err);
                 if (!user) {
-                    console.log('User not found with that username: ', username);
+                    loggerWarn.log('warn', 'User not found with that username: ', username);
                     return done(null, false,
-                        console.log('message', 'User not found.')
+                        loggerConsole.log('message', 'Invalid username/password.')
                         )
                 }
                 if (!isValidPassword(user, password)){
-                    console.log('Invalid password');
+                    loggerWarn.log('warn', 'Invalid password');
                     return done (null, false, 
-                            console.log('message', 'Invalid password.')
+                            loggerConsole.log('message', 'Invalid username/password.')
                         )
                 }
                 return done(null, user);
@@ -35,14 +36,14 @@ passport.use('signup', new LocalStrategy(
         findOrCreateUser = function () {
             Users.findOne({ 'username': username }, (err, user) => {
                 if (err) {
-                    console.log('Error in SignUp: ', err);
+                    loggerWarn.log('warn', 'Error in SignUp: ', err);
                     return done(err);
                 }
                 if (user) {
-                    console.log('User already exists');
-                    return done(null, false, console.log('message', 'User Already Exists'));
+                    loggerConsole.log('debug', 'User already exists at signup');
+                    return done(null, false, loggerConsole.log('message', 'User Already Exists'));
                 }
-                console.log("Pasó las pruebas!")
+                loggerConsole.log('message', "Pasó las pruebas!")
                 var newUser = new Users();
                 newUser.username = username;
                 newUser.password = createHash(password);
@@ -50,13 +51,15 @@ passport.use('signup', new LocalStrategy(
                 newUser.lastName = req.body.lastName;
                 newUser.email = req.body.email;
                 newUser.telefono = req.body.telefono;
+
                 //este es el path que me devuelve multer a través de file
                 newUser.foto = req.file.path.substr(6);
 
                 newUser.save((err) => {
                     if (err) {
                         console.log('Error saving new user: ', err);
-                        throw err;
+                        loggerError.log('error', "Error saving new user");
+                        throw new Error;
                     }
                     console.log('User registered sucessfully!');
                     return done(null, newUser);

@@ -21,7 +21,8 @@ routerCarrito.get('/listar/:id', async (req,res)=>{
 
 //POST /carrito/agregar/:id Guardar a través de POST un producto en el carrito a través de su id.
 routerCarrito.post('/agregar/:id', async (req, res)=>{
-    const response = await carrito.guardar(req.params.id);
+    //Agregado del username que le corresponde al carrito del usuario en cuestión
+    const response = await carrito.guardar(req.params.id, req.user.username);
     res.json(response);
 })
 

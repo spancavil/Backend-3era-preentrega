@@ -13,9 +13,7 @@ class MongoLocal extends Persistencia {
 
     async listarId(productoId){
         try {
-            console.log(productoId);
             const producto = await ProductosMongo.findById(productoId);
-            console.log(producto);
             if (producto){
                 return producto;
             }

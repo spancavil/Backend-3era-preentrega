@@ -1,3 +1,4 @@
+const { loggerError } = require('../libs/loggerWinston');
 const Persistencia = require('../models/PersistenciaFactory');
 const persistencia = new Persistencia();
 const instance = persistencia.getPersist("Producto");
@@ -12,7 +13,7 @@ class Producto {
             return response;
         }
         catch(e) {
-            console.log("Error al listar!: ", e);
+            loggerError.log('error', "Error al listar en productos: ", e);
         }
     }
 
@@ -21,7 +22,7 @@ class Producto {
             const response = await instance.listarId(productoId);
             return response
         } catch (e) {
-            console.log("Error al guardar!: ", e);
+            loggerError.log('error', "Error al listar por Id en producto: ", e);
         }
     }
     
@@ -38,7 +39,7 @@ class Producto {
             }
 
         } catch (e) {
-            console.log("Error al guardar!: ", e);
+            loggerError.log('error', "Error al guardar en producto: ", e);
         }
 
     }
@@ -52,7 +53,7 @@ class Producto {
             console.log(response);
             return response;
         } catch (e) {
-            console.log("Error en actualizar un producto: ", e);
+            loggerError.log('error', "Error en actualizar un producto: ", e);
         }
     }
 
@@ -64,7 +65,7 @@ class Producto {
             const response = await instance.borrar(productoId);
             return response;
         } catch (e) {
-            console.log("Error en borrar un producto: ", e);
+            loggerError.log('error', "Error en borrar un producto: ", e);
         }
     }
 }

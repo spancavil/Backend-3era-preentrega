@@ -40,15 +40,16 @@ class Mongo extends Persistencia{
         }
     }
 
-    async guardar(productoId){
+    async guardar(productoId, username){
         try {
             const producto = await ProductoMongo.findById(productoId);
             if (producto){
                 const response = await CarritoMongo.create({
                     producto: producto,
-                    productoId: productoId,
-                    timestamp: (new Date()).toLocaleString()
+                    timestamp: (new Date()).toLocaleString(),
+                    buyer: username
                 })
+                return response;
             }
         } catch (e) {
             console.log("Error al guardar un producto en carrito en mongo: ", e);

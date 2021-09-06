@@ -40,7 +40,7 @@
         </button>
 
         <span 
-        style="font-size: 2em; color: lightblue; position: absolute; right: 190px;"
+        style="font-size: 1.5rem; color: lightblue; position: absolute; right: 190px;"
         id="carrito" 
         cantidad=<%=productosEnCarritoFiltrados%>>
             <i class="fas fa-shopping-cart"></i>
@@ -99,9 +99,12 @@
         console.log(cantidadDeProductosEnCart);
 
         if (cantidadDeProductosEnCart>0){
-            cart.setAttribute('style', 'font-size: 2em; color: red; position: absolute; right: 190px;')
-            icon[0].innerHTML = `(${cantidadDeProductosEnCart})`
+            cart.setAttribute('style', 'font-size: 1.5em; color: red; position: absolute; right: 190px;')
+            icon[0].innerHTML = `(${cantidadDeProductosEnCart})`;
+            cart.addEventListener('click', ()=> location.href = "/carrito/cart")
         }
+
+        if (cantidadDeProductosEnCart === 0)cart.removeEventListener('click')
         // cart.setAttribute('style', `
         //     color: ${}
         // `)

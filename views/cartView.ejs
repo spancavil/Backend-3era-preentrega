@@ -1,0 +1,77 @@
+<%- include('./layout')-%>
+    <div class="d-flex flex-row align-items-center p-3 mx-3 bg-dark text-light" style="border-radius: 10px;">
+        <span>The backend burguer</span>
+
+        <button class="btn btn-success my-3" style="position: absolute; right: 150px;" onclick="location.href='/datos'">
+            Go back
+        </button>
+
+        <button class="btn btn-success my-3" style="position: absolute; right: 50px;" onclick="location.href='/logout'">
+            Log out
+        </button>
+
+        <img src=<%=photo%> style="width: 40px; border-radius: 25px; position: absolute; right:250px">
+    </div>
+    <h3 class="text-center" style="font-weight: bold; font-style: italic;">Cart view</h3>
+    <% if (cantidad !==0) {%>
+        <div class="table-responsive">
+            <table class="table table-dark ">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Foto</th>
+                    <th>Precio</th>
+                </tr>
+                <% productos.forEach( producto=> { %>
+                    <tr>
+                        <td class='align-items-center''>
+                    <%=producto.producto.nombre%>
+                </td>
+                <td class=' d-flex flex-row justify-content-between align-items-center'>
+                            <%=producto.producto.descripcion%>
+                                <button class="btn btn-danger m-1" id=<%=producto._id%>>
+                                    Remove
+                                </button>
+                        </td>
+                        <td>
+                            <img width="40" src=<%=producto.producto.imagen%> alt="" style="position: relative; left:
+                            0px; border-radius: 10px">
+                        </td>
+                        <td>
+                            $<%=producto.producto.precio%>
+                        </td>
+                    </tr>
+                    <% }) %>
+
+            </table>
+            <button class="btn btn-success my-2" style="position: absolute; right: 10px;">
+                Finalizar compra
+            </button>
+        </div>
+        <%} else { %>
+            <h4 class="text-center"> No hay productos en su carrito! </h4>
+        <% } %>
+    </body>
+
+    <script>
+        const botones = document.querySelectorAll('table .btn');
+        console.log(botones);
+        for (const boton of botones) {
+            boton.addEventListener('click', () => {
+                fetch(`/carrito/borrar/${boton.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                         location.reload();
+                    })
+                    .catch(e => console.log("Error: ", e))
+            })
+        }
+    </script>
+
+</html>

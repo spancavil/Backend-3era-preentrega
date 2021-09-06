@@ -121,7 +121,7 @@ app.get('/failsignin', (req, res) => {
 })
 
 app.get('/datos', checkAuth, async (req, res) => {
-    loggerWarn.log('warn', `El usuario ${req.user.displayName} con id: ${req.user.id} ingresó a /datos`)
+    loggerWarn.log('warn', `El usuario ${req.user.username} con id: ${req.user.id} ingresó a /datos`)
     const productosDB = await producto.listar();
     //Productos correspondientes al usuario en cuestión
     const productosEnCarrito = await carrito.listar();
@@ -165,3 +165,5 @@ const server = app.listen(PORT, () => {
 server.on('error', () => {
     loggerError.log('An error ocurred while setting up server.');
 })
+
+module.exports = checkAuth;

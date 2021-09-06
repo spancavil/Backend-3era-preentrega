@@ -2,3 +2,5 @@
 package-lock.json
 .env
 /Segunda\ Preentrega
+warnings.log
+errors.log

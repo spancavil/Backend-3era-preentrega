@@ -58,7 +58,8 @@ class Mongo extends Persistencia{
 
     async borrar(productoId){
         try {
-            const response = CarritoMongo.find({productoId: productoId}).deleteOne();
+            console.log("Se borro!");
+            const response = CarritoMongo.findById(productoId).deleteOne();
             return response;
         } catch (e) {
             console.log("Error al borrar un producto en Mongo: ", e)

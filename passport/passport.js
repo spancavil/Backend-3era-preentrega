@@ -43,7 +43,7 @@ passport.use('signup', new LocalStrategy(
                     loggerConsole.log('debug', 'User already exists at signup');
                     return done(null, false, loggerConsole.log('message', 'User Already Exists'));
                 }
-                loggerConsole.log('message', "Pasó las pruebas!")
+                loggerConsole.log('debug', "Pasó las pruebas!")
                 var newUser = new Users();
                 newUser.username = username;
                 newUser.password = createHash(password);
@@ -57,11 +57,11 @@ passport.use('signup', new LocalStrategy(
 
                 newUser.save((err) => {
                     if (err) {
-                        console.log('Error saving new user: ', err);
+                        loggerConsole.log('debug', 'Error saving new user: ', err);
                         loggerError.log('error', "Error saving new user");
                         throw new Error;
                     }
-                    console.log('User registered sucessfully!');
+                    loggerConsole.log('debug', 'User registered sucessfully!');
                     return done(null, newUser);
                 })
             })

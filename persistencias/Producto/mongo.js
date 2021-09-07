@@ -4,6 +4,7 @@ const Persistencia = require("../persistenciaProductosInterface");
 
 //Mongo local o Atlas
 const {alojamientoMongo} = require ('../../cfg/persistenceTypes');
+const { loggerError } = require("../../libs/loggerWinston");
 require(`../../databases/mongo${alojamientoMongo}`);
 
 class MongoLocal extends Persistencia {
@@ -21,7 +22,7 @@ class MongoLocal extends Persistencia {
                 return {message: "No hay producto cargado con ese id"};
             }
         } catch (e) {
-            ("Error al listar por id en Mongo: ", e);
+            loggerError.log('error', "Error al listar por id en Mongo: ", e);
         }
 
     }
@@ -36,7 +37,7 @@ class MongoLocal extends Persistencia {
                 return {message: "No hay productos cargados"}
             }
         } catch (e) {
-            console.log("Error al leer los mensajes: ", e);
+            loggerError.log('error', "Error al leer los mensajes: ", e);
         }
     }
 
@@ -45,7 +46,7 @@ class MongoLocal extends Persistencia {
             const response = await ProductosMongo.create(producto);
             return response;
         } catch (e) {
-            console.log('Error al guardar en Mongo: ', e)
+            loggerError.log('error', 'Error al guardar en Mongo: ', e)
         }
     }
 
@@ -54,7 +55,7 @@ class MongoLocal extends Persistencia {
             const response = await ProductosMongo.findByIdAndUpdate(productoId, producto);
             return response;
         } catch (error) {
-            console.log("Error al actualizar un producto en Mongo: ", e)
+            loggerError.log('error', "Error al actualizar un producto en Mongo: ", e)
         }
     }
 
@@ -63,7 +64,7 @@ class MongoLocal extends Persistencia {
             const response = ProductosMongo.findByIdAndDelete(productoId);
             return response;
         } catch (e) {
-            console.log("Error al borrar un producto en Mongo: ", e)
+            loggerError.log('error', "Error al borrar un producto en Mongo: ", e)
         }
     }
 

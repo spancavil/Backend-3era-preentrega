@@ -12,6 +12,7 @@
 
         <img src=<%=photo%> style="width: 40px; border-radius: 25px; position: absolute; right:250px">
     </div>
+    
     <h3 class="text-center" style="font-weight: bold; font-style: italic;">Cart view</h3>
     <% if (cantidad !==0) {%>
         <div class="table-responsive">
@@ -44,15 +45,46 @@
                     <% }) %>
 
             </table>
-            <button class="btn btn-success my-2" style="position: absolute; right: 10px;">
-                Finalizar compra
-            </button>
+
+            <!-- Colocamos los productos del carrito accesibles -->
+            <button type="button" class="btn btn-primary" 
+            style="position: absolute; right: 10px;"
+            id="buttonWithProducts"
+            data-username='<%-username%>' 
+            data-productos-value='<%-JSON.stringify(productos)%>'
+            data-telefono='<%-phone%>'
+            >
+            Finalizar compra
+        </button>
+
+            <!-- Modal de finalizacion de compra-->
+            <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" onclick="location.reload()" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body" id="cuerpoDelModal">
+                    </div>
+                    <div class="modal-footer">
+                    <button onclick="location.reload()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
         <%} else { %>
             <h4 class="text-center"> No hay productos en su carrito! </h4>
         <% } %>
     </body>
 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
     <script>
         const botones = document.querySelectorAll('table .btn');
         console.log(botones);
@@ -66,12 +98,63 @@
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
-                         location.reload();
+                        location.reload();
                     })
                     .catch(e => console.log("Error: ", e))
             })
         }
+        const botonConProductos = document.getElementById('buttonWithProducts');
+        const modalCheckout = document.getElementById('checkoutModal');
+        if (botonConProductos) botonConProductos.addEventListener('click', sendCheckout);
+
+        //Enviamos al endpoint correspondiente y luego lanzamos un modal informando al usuario que la operación se concretó o no.
+        function sendCheckout(){
+            const username = botonConProductos.dataset.username;
+            const phone = botonConProductos.dataset.telefono;
+            const carrito = JSON.parse(botonConProductos.dataset.productosValue);
+            let mensaje = {
+                textoCompra: "",
+                total: 0,
+                buyer: username,
+                phone
+            }
+            
+            mensaje.textoCompra = "The backend burger, productos seleccionados: \n";
+    
+            for (const producto of carrito) {
+                mensaje.textoCompra += producto.producto.nombre + ", precio: $" + producto.producto.precio + "\n";
+                mensaje.total += producto.producto.precio
+            }
+            mensaje.textoCompra += "El total es: $" + mensaje.total +"\nGracias por elegirnos!";
+    
+            fetch(`/carrito/checkout`, {
+                body: JSON.stringify(mensaje),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+    
+                if (data.n === 0){
+                    modalCheckout.querySelector('.modal-title').innerHTML = "Compra realizada con éxito";
+                    modalCheckout.querySelector('.modal-body').innerHTML = "En breve le enviaremos un mensaje de confirmación de Whatsapp al número registrado!";
+                    const myModal = $('#checkoutModal')
+                    myModal.modal('show');
+                  
+                }
+                else {
+                    modalCheckout.querySelector('.modal-title').innerHTML = "Compra realizada con éxito";
+                    modalCheckout.querySelector('.modal-body').innerHTML = "En breve le enviaremos un mensaje de confirmación de Whatsapp al número registrado!";
+                    const myModal = $('#checkoutModal');
+                    myModal.modal('show');
+                
+                }
+            })
+            .catch(e => console.log("Error: ", e))
+        }
+
     </script>
 
 </html>

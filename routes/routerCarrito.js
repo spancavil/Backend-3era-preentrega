@@ -2,8 +2,13 @@ const express = require ('express');
 const routerCarrito = express.Router();
 
 const Carrito = require ('../api/Carrito');
+const { sendGmailOrder } = require('../libs/nodeMailer');
+const { sendTwilioConfirmation, sendTwilioOrderToAdmin } = require('../libs/twilio');
 
 const carrito = new Carrito();
+
+// Usamos los archivos de la carpeta public
+routerCarrito.use(express.static('public'));
 
 /****************ALL USERS ********************/
 
@@ -33,18 +38,37 @@ routerCarrito.delete('/borrar/:id', async (req, res) => {
     res.json(response);
 })
 
+//GET /carrito/cart vista del carrito.
 routerCarrito.get('/cart', checkAuth, async (req,res)=> {
-    const user = req.user.username 
+    const user = req.user.username;
+    const foto = req.user.foto;
+    const telefono = req.user.telefono
     const productsInCart = await carrito.listar();
     const filteredProducts = productsInCart.filter(producto => producto.buyer === user);
-    /* res.render('/cartView', {
-        productos: filteredProducts
-    }) */
+
     res.render('./cartView', {
         productos: filteredProducts,
         cantidad: filteredProducts.length,
-        photo: req.user.foto
+        photo: foto,
+        username: user,
+        phone: telefono
     })
+})
+
+//POST /carrito/checkout Borra los elementos del carrito que corresponden al buyer loggeado, además envía las notificaciones correspondientes
+routerCarrito.post('/checkout', checkAuth, async (req,res)=>{
+    const {buyer, textoCompra, phone} = req.body;
+    const email = req.user.email; 
+    const response = await carrito.borrarCarrito(buyer);
+    if (response.n > 0) {
+        //Pedido en proceso enviado al usuario
+        sendTwilioConfirmation(buyer, textoCompra, phone);
+
+        //Pedidos enviados al Admin por mail y teléfono
+        sendTwilioOrderToAdmin(textoCompra, phone, email, buyer, process.env.DESTINATARIOADMINWTP)
+        sendGmailOrder(buyer, textoCompra, phone, email)
+    } 
+    res.send(response)
 })
 
 function checkAuth(req, res, next) {

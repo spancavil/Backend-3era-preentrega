@@ -26,7 +26,7 @@ const MongoStore = require('connect-mongo');
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
 //Funciones para envío de mail y sms modularizadas
-const { sendMailEthereal, sendMailGmailSignup } = require('./libs/nodeMailer')
+const {sendMailGmailSignup} = require('./libs/nodeMailer')
 const sendTwilioSignUp = require ('./libs/twilio')
 
 //Modelos de usuario
@@ -94,15 +94,13 @@ app.get('/successsignup', async (req, res) => {
     let lastUserAdded = await Users.find({}).sort({_id: -1}).limit(1)
     //console.log("Ultimo usuario:", lastUserAdded);
     const mailOptions = {
-        from: 'Servidor Node.js',
+        from: 'The backend burger',
         to: process.env.ADMINEMAIL,
         subject: `Nuevo usuario registrado al sitio!`,
-        html: `<h1 style="color: blue;">Sign up con username: ${lastUserAdded[0].username}, email: ${lastUserAdded[0].email}. Fecha: ${new Date().toLocaleString()}</h1>`
+        html: `<h4 style="color: blue;">Sign up con username: ${lastUserAdded[0].username}, email: ${lastUserAdded[0].email}. Fecha: ${new Date().toLocaleString()}</h4>`
     }
     sendMailGmailSignup(mailOptions);
     loggerWarn.warn("warn", `Sign up con username: ${lastUserAdded[0].username}, email: ${lastUserAdded[0].email}. Fecha: ${new Date().toLocaleString()}`)
-    // let data = {body: "New user registered!"}
-    // sendTwilioSignUp(data)
     res.render(`successsignup`);
 })
 
@@ -151,7 +149,6 @@ app.get('/logout', (req, res) => {
     res.render('logout');
 })
 
-
 //Definimos 2 routers
 app.use('/productos', routerProductos);
 app.use('/carrito', routerCarrito);
@@ -165,5 +162,3 @@ const server = app.listen(PORT, () => {
 server.on('error', () => {
     loggerError.log('An error ocurred while setting up server.');
 })
-
-module.exports = checkAuth;

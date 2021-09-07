@@ -18,10 +18,10 @@ function sendMailEthereal(mailOptions) {
     console.log(mailOptions);
     transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-            console.log(err)
+            loggerError.log('error', err)
             return err
         }
-        console.log(info)
+        loggerConsole.log('debug', info)
     });
 }
 
@@ -44,4 +44,32 @@ function sendMailGmailSignup(mailOptions) {
     });
 }
 
-module.exports = { sendMailEthereal, sendMailGmailSignup };
+function sendGmailOrder(buyer, textoCompra, phone, email){
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.USERGMAIL,
+            pass: process.env.PASSGMAIL
+        }
+    });
+
+    const mailOptions = {
+        from: 'The backend burger',
+        to: process.env.ADMINEMAIL,
+        subject: `Nuevo pedido entrante!`,
+        html: `<h4 style="color: blue;">Nuevo pedido del username: ${buyer}, email: ${email}, teléfono: ${phone}.<br>
+        ${textoCompra} <br>
+        Fecha: ${new Date().toLocaleString()}</h4>`
+    }
+
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            loggerError.log("error", err)
+            return err
+        }
+        loggerConsole.log("debug", info)
+    });
+
+}
+
+module.exports = { sendMailEthereal, sendMailGmailSignup, sendGmailOrder};

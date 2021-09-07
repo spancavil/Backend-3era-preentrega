@@ -55,6 +55,15 @@ class Carrito {
         }
     }
 
+    async borrarCarrito(buyer){
+        try {
+            const response = await instance.borrarCarrito(buyer);
+            return response;
+        } catch (error) {
+            loggerError.log('error', 'Error al borrar los productos del carrito de', buyer)
+        }
+    }
+
 }
 
 module.exports = Carrito;

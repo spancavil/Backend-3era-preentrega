@@ -94,9 +94,8 @@
         const botones = document.querySelectorAll('.addCart')
         const cart = document.getElementById("carrito");
         const icon = document.getElementsByTagName("i");
-        console.log(icon);
+       
         cantidadDeProductosEnCart = cart.getAttribute("cantidad");
-        console.log(cantidadDeProductosEnCart);
 
         if (cantidadDeProductosEnCart>0){
             cart.setAttribute('style', 'font-size: 1.5em; color: red; position: absolute; right: 190px;')
@@ -104,14 +103,13 @@
             cart.addEventListener('click', ()=> location.href = "/carrito/cart")
         }
 
-        if (cantidadDeProductosEnCart === 0)cart.removeEventListener('click')
-        // cart.setAttribute('style', `
-        //     color: ${}
-        // `)
+        if (cantidadDeProductosEnCart === 0) cart.removeEventListener('click')
+        
         for (const boton of botones) {
             boton.addEventListener('click', e => {
-                console.log(e.target.id);
                 const productoId = e.target.id;
+
+                //Al agregar un producto, se llama al endpoint correspondiente y se recarga la página.
                 fetch(`/carrito/agregar/${productoId}`, {
                     method: 'POST',
                     headers: {
@@ -120,7 +118,6 @@
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
                         location.reload();
                     })
                     .catch(e => console.log("Error: ", e))

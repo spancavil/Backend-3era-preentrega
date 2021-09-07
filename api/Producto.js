@@ -50,7 +50,6 @@ class Producto {
         }
         try {
             const response = await instance.actualizar(productoId, producto);
-            console.log(response);
             return response;
         } catch (e) {
             loggerError.log('error', "Error en actualizar un producto: ", e);

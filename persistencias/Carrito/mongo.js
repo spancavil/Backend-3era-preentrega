@@ -4,6 +4,7 @@ const ProductoMongo = require ('../../models/ProductosMongo');
 
 //Connection mongo Atlas (implementable local)
 const {alojamientoMongo} = require ('../../cfg/persistenceTypes');
+const { loggerError, loggerConsole } = require('../../libs/loggerWinston');
 require(`../../databases/mongo${alojamientoMongo}`);
 
 
@@ -22,7 +23,7 @@ class Mongo extends Persistencia{
                 return {message: "No hay productos cargados"}
             }
         } catch (e) {
-            console.log("Error al leer los mensajes: ", e);
+            loggerError.log('error',"Error al leer los mensajes: ", e);
         }
     }
 
@@ -36,7 +37,7 @@ class Mongo extends Persistencia{
                 return {message: "No hay producto en el carrito con ese id"};
             }
         } catch (e) {
-            console.log("Error al listar por Id en Mongo: ", e);
+            loggerError.log('error',"Error al listar por Id en Mongo: ", e);
         }
     }
 
@@ -52,17 +53,26 @@ class Mongo extends Persistencia{
                 return response;
             }
         } catch (e) {
-            console.log("Error al guardar un producto en carrito en mongo: ", e);
+            loggerError.log('error',"Error al guardar un producto en carrito en mongo: ", e);
         }
     }
 
     async borrar(productoId){
         try {
-            console.log("Se borro!");
             const response = CarritoMongo.findById(productoId).deleteOne();
             return response;
         } catch (e) {
-            console.log("Error al borrar un producto en Mongo: ", e)
+            loggerError.log('error',"Error al borrar un producto en Mongo: ", e)
+        }
+    }
+
+    async borrarCarrito(buyer){
+        try {
+            const response = await CarritoMongo.find({"buyer": buyer}).deleteMany();
+            return (response);
+        } catch (error) {
+            loggerConsole ('debug', "Error al borrar el carrito: ", error)
+            loggerError.log('error',"Error al borrar un carrito en Mongo: ", e)
         }
     }
 }

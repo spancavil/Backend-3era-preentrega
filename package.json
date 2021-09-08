@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "fork": "pm2 start server.js --name='ServerFork' -- 8081",
+    "cluster": "pm2 start server.js --name='ServerCluster' -i max -- 8082"
   },
   "author": "",
   "license": "ISC",

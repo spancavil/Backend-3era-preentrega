@@ -1,0 +1,13 @@
+Primero montar los servers utilizando pm2, los comandos los encontramos en el package.JSON
+
+npm run fork
+npm run cluster
+
+Luego realizamos los análisis con artillery:
+
+artillery quick --count 20 -n 50 "http://localhost:8081" > ./resultWithFork.log
+artillery quick --count 20 -n 50 "http://localhost:8082" > ./resultWithCluster.log
+
+Ejecutados los análisis eliminar los servers montados con pm2
+
+pm2 delete all
